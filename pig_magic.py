@@ -70,12 +70,8 @@ class PigMagics(Magics):
         args = parse_argstring(self.pig, line)
 
         run_pig(cell, scope=args.x)
-
-def load_ipython_extension(ip):
-    """Load the extension in IPython."""
-    ip.register_magics(PigMagics)
     
-    js_string = """
+js_string = """
 /*
  *      Pig Latin Mode for CodeMirror 2
  *      @author Prasanth Jayachandran
@@ -255,17 +251,22 @@ CodeMirror.defineMode("pig", function(_config, parserConfig) {
 IPython.config.cell_magic_highlight['magic_pig'] = {'reg':[/^%%pig/]};
 """
 
-    # enable Pig highlight
-    js = display.Javascript(data=js_string)
-    display.display_javascript(js)
-
-    # some custom CSS to augment the syntax highlighting
-    css_string = \
+css_string = \
 """
 <style>
 .cm-s-ipython span.cm-variable-2{color:#05a}
 .cm-s-ipython span.cm-type{color:#804}
 </style>
 """
+
+def load_ipython_extension(ip):
+    """Load the extension in IPython."""
+    ip.register_magics(PigMagics)
+
+    # enable Pig highlight
+    js = display.Javascript(data=js_string)
+    display.display_javascript(js)
+
+    # some custom CSS to augment the syntax highlighting
     css = display.HTML(css_string)
     display.display_html(css)
